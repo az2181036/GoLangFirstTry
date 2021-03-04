@@ -18,28 +18,28 @@ func MyAlgorithm(dc class.Datacenter, edges []class.Edge, clusterings [][]int) [
 	cntMigrationToEdge := 0
 	cntMigrationToCloud := 0
 	for i := 0; i < len(clusterings); i++ {
-		MigSide, RecSide = cloud_edge.GetInitBipartiteGraph(clusterings[i], edges)
+		MigSide, RecSide = cloud_edge.GetInitBipartiteGraph(edges, clusterings[i])
 		for len(MigSide) > 0 {
 			vis = make([]int, len(MigSide))
-			adjacencyList := cloud_edge.GetBipartiteGraphEdge(clusterings[i], MigSide, RecSide)
+			adjacencyList := cloud_edge.GetBipartiteGraphEdge(edges, MigSide, RecSide)
 			p := Hungary(adjacencyList)
 			for k := 0; k < len(p); k++ {
 				if p[k] != -1 {
 					vis[p[k]] = 1
-					clusterings[i][RecSide[k]].ProcQueue = append(clusterings[i][RecSide[k]].ProcQueue,
-						clusterings[i][MigSide[p[k]]].MigQueue[0])
-					clusterings[i][RecSide[k]].TimeLine += class.TaskComputeTime(clusterings[i][MigSide[p[k]]].MigQueue[0],
-						clusterings[i][RecSide[k]])
+					edges[RecSide[k]].ProcQueue = append(edges[RecSide[k]].ProcQueue,
+						edges[MigSide[p[k]]].MigQueue[0])
+					edges[RecSide[k]].TimeLine += class.TaskComputeTime(edges[MigSide[p[k]]].MigQueue[0],
+						edges[RecSide[k]])
 					cntMigrationToEdge++
 				}
 			}
 			for k := 0; k < len(vis); k++ {
 				if vis[k] == 0 {
-					dcTaskQueue = append(dcTaskQueue, clusterings[i][MigSide[k]].MigQueue[0])
+					dcTaskQueue = append(dcTaskQueue, edges[MigSide[k]].MigQueue[0])
 					cntMigrationToCloud++
 				}
 			}
-			MigSide, RecSide = cloud_edge.GetBipartiteGraph(clusterings[i])
+			MigSide, RecSide = cloud_edge.GetBipartiteGraph(edges, MigSide, RecSide)
 		}
 	}
 
@@ -62,10 +62,8 @@ func MyAlgorithm(dc class.Datacenter, edges []class.Edge, clusterings [][]int) [
 	}
 
 	cnt := 0
-	for i := 0; i < len(clusterings); i++ {
-		for j := 0; j < len(clusterings[i]); j++ {
-			cnt += len(clusterings[i][j].TaskQueue)
-		}
+	for i := 0; i < len(edges); i++ {
+		cnt += len(edges[i].TaskQueue)
 	}
 	return []int{cntMigrationToEdge, cntMigrationToCloud,
 		cnt, cntDDLViolate}

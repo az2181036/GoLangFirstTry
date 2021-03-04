@@ -9,12 +9,13 @@ import (
 )
 
 func main() {
-	var data [][]int
-	var t []float64
 	dc := class.Datacenter{1000, make([]class.Task, 0,
 		class.N_UPPER*class.TASK_NUMBER_UPPER_LIMIT[3]), 10.0 * 1e9}
 	edges := cloud_edge.GenerateEdges()
 	clusterings := util.GetClusterings(edges)
+
+	var t []float64
+	var data [][]int
 	for o := 0; o < 4; o++ {
 		for i := 0; i < len(edges); i++ {
 			numberOfTasks := rand.Intn(class.TASK_NUMBER_UPPER_LIMIT[o])
