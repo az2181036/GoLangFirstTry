@@ -9,17 +9,11 @@ import (
 	"syscall"
 )
 
-type centroid struct {
-	x float64
-	y float64
-}
-
-func Kmeans(m, n int, edges []class.Edge) [][]int {
+func Kmeans(m, n int, edges []class.Edge) [][]class.Edge {
 	if m > n {
 		fmt.Print(errors.New("Clustering number is greater than edges number"))
 		return nil
 	}
-
 	var centers []int
 	for i := 0; i < n; i++ {
 		centers = append(centers, i)
@@ -29,17 +23,15 @@ func Kmeans(m, n int, edges []class.Edge) [][]int {
 	})
 
 	// get clusterCenter
-	var clusterCenter []centroid
+	var clusterCenter []class.Edge
 	for i := 0; i < m; i++ {
-		clusterCenter = append(clusterCenter, centroid{float64(edges[centers[i]].Lx),
-			float64(edges[centers[i]].Ly)})
+		clusterCenter = append(clusterCenter, edges[centers[i]])
 	}
 
 	var iterNumber = 0
-	var clusterings [][]int
-	var centerMap = make(map[int][]int)
-	for {
-		iterNumber++
+	var clusterings [][]class.Edge
+	for ; ; iterNumber++ {
+		var centerMap = make(map[int][]class.Edge)
 		for i := 0; i < n; i++ {
 			minDistance := float64(syscall.INFINITE)
 			var kind int
@@ -51,13 +43,13 @@ func Kmeans(m, n int, edges []class.Edge) [][]int {
 				}
 			}
 			if _, ok := centerMap[kind]; ok {
-				centerMap[kind] = append(centerMap[kind], i)
+				centerMap[kind] = append(centerMap[kind], edges[i])
 			} else {
-				centerMap[kind] = []int{i}
+				centerMap[kind] = []class.Edge{edges[i]}
 			}
 		}
 
-		newClusterCenter := PointAllNewCenters(centerMap, edges)
+		newClusterCenter := PointAllNewCenters(centerMap)
 
 		var flag = true
 		for i := 0; i < m; i++ {
@@ -73,38 +65,38 @@ func Kmeans(m, n int, edges []class.Edge) [][]int {
 			}
 			break
 		}
-		centerMap = make(map[int][]int)
 		clusterCenter = newClusterCenter
 	}
 	return clusterings
 }
 
-func JudgeEquationOFCenter(a, b centroid) bool {
-	if math.Abs(a.x-b.x) <= class.EPS && math.Abs(a.y-b.y) <= class.EPS {
+func JudgeEquationOFCenter(a, b class.Edge) bool {
+	if math.Abs(float64(a.Lx-b.Lx)) <= class.EPS && math.Abs(float64(a.Ly-b.Ly)) <= class.EPS {
 		return true
 	}
 	return false
 }
 
-func Distance(a class.Edge, b centroid) float64 {
-	t1 := float64(a.Lx) - b.x
-	t2 := float64(a.Ly) - b.y
+func Distance(a, b class.Edge) float64 {
+	t1 := a.Lx - b.Lx
+	t2 := a.Ly - b.Ly
 	return float64(t1*t1 + t2*t2)
 }
 
-func PointAllNewCenters(centerMap map[int][]int, edges []class.Edge) []centroid {
-	var clusterCenter []centroid
+func PointAllNewCenters(centerMap map[int][]class.Edge) []class.Edge {
+	var clusterCenter []class.Edge
 	for i := 0; i < len(centerMap); i++ {
-		clusterCenter = append(clusterCenter, FindNewCenter(centerMap[i], edges))
+		clusterCenter = append(clusterCenter, FindNewCenter(centerMap[i]))
 	}
 	return clusterCenter
 }
 
-func FindNewCenter(c []int, edges []class.Edge) centroid {
-	var sumx, sumy float64 = 0, 0
+func FindNewCenter(c []class.Edge) class.Edge {
+	sumx, sumy := 0, 0
 	for i := 0; i < len(c); i++ {
-		sumx += float64(edges[c[i]].Lx)
-		sumy += float64(edges[c[i]].Ly)
+		sumx += c[i].Lx
+		sumy += c[i].Ly
 	}
-	return centroid{sumx / float64(len(c)), sumy / float64(len(c))}
+	return class.Edge{-1, sumx / len(c), sumy / len(c), []class.Task{}, []class.Task{},
+		[]class.Task{}, 0, 0, 0}
 }

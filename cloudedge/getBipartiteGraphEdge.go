@@ -5,15 +5,15 @@ import (
 	"sort"
 )
 
-func GetBipartiteGraphEdge(edges []class.Edge, MigSide, RecSide []int) [][]int {
+func GetBipartiteGraphEdge(clustering []class.Edge, MigSide, RecSide []int) [][]int {
 	var adjacencyList = make([][]int, 0, len(MigSide))
 	for j := 0; j < len(MigSide); j++ {
 		var tmpList = make([]int, 0, len(RecSide))
 		for k := 0; k < len(RecSide); k++ {
-			if len(edges[MigSide[j]].MigQueue) != 0 {
-				tmpTaskList := edges[RecSide[k]].ProcQueue
-				tmpTaskList = append(tmpTaskList, edges[MigSide[j]].MigQueue[0])
-				if jgMigration(tmpTaskList, edges[RecSide[k]]) {
+			if len(clustering[MigSide[j]].MigQueue) != 0 {
+				tmpTaskList := clustering[RecSide[k]].ProcQueue
+				tmpTaskList = append(tmpTaskList, clustering[MigSide[j]].MigQueue[0])
+				if jgMigration(tmpTaskList, clustering[RecSide[k]]) {
 					tmpList = append(tmpList, k)
 				}
 			} else {
