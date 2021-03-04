@@ -1,6 +1,7 @@
 package class
 
-type Datacenter struct{
-	taskQueue []Task
-	computePower float32
+type Datacenter struct {
+	Bandwidth    int
+	TaskQueue    []Task
+	ComputePower float32
 }

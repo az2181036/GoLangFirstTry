@@ -12,7 +12,7 @@ func main() {
 		for i := 0; i < len(edges); i++ {
 			util.EDF(&edges[i])
 		}
-		data = append(data, util.EdgeOnlyNoMigration(edges, o))
+		data = append(data, util.EdgeOnlyWithMigration(edges, o))
 	}
-	util.WriteInCSV(data, "experiment_EdgeOnlyNoMigration.csv")
+	util.WriteInCSV(data, "experiment_EdgeOnlyWithMigration.csv")
 }
