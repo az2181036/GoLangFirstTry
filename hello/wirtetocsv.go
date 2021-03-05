@@ -32,7 +32,7 @@ func main() {
 	w.Flush()
 
 	defer f2.Close()
-	f1.WriteString("\xEF\xBB\xBF") // 写入UTF-8 BOM
+	f2.WriteString("\xEF\xBB\xBF") // 写入UTF-8 BOM
 	w = csv.NewWriter(f2)
 	w.Write([]string{"X", "Y", "center"})
 	for i := 0; i < len(center); i++ {

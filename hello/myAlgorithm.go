@@ -29,7 +29,7 @@ func main() {
 		}
 
 		for i := 0; i < len(edges); i++ {
-			util.EDF(&edges[i])
+			util.STF(&edges[i])
 		}
 
 		for i := 0; i < len(clusterings); i++ {
@@ -39,7 +39,7 @@ func main() {
 		}
 		var cntTasksNumber = 0
 		for i := 0; i < len(edges); i++ {
-			cntTasksNumber += len(edges[i].TaskQueue)
+			cntTasksNumber += len(edges[i].ProcQueue)
 		}
 
 		fmt.Println(cntTasksNumber, len(edges))
@@ -49,5 +49,15 @@ func main() {
 		execTime := float64((endtime - startime) / 1e6)
 		t = append(t, execTime)
 	}
-	util.WriteInCSV(data, t, "experiment_my_150_max_edges_number_12_clusterings_myclustering_v2.csv")
+	util.WriteInCSV(data, t, "experiment_edf.csv")
 }
+
+//4961 121
+//12934 121
+//21433 121
+//30081 121
+//
+//5459 121
+//15072 121
+//24703 121
+//32603 121

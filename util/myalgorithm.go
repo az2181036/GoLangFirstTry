@@ -66,8 +66,7 @@ func MyAlgorithm(dc class.Datacenter, edges []class.Edge, clusterings [][]class.
 			cnt += len(clusterings[i][j].TaskQueue)
 		}
 	}
-	return []int{cntMigrationToEdge, cntMigrationToCloud,
-		cnt, cntDDLViolate}
+	return []int{cntMigrationToEdge, cntMigrationToCloud, cnt, cntDDLViolate}
 }
 
 func UseKmeans(edges []class.Edge) [][]class.Edge {
