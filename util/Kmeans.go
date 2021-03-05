@@ -9,6 +9,11 @@ import (
 	"syscall"
 )
 
+type Centroid struct {
+	X float64
+	Y float64
+}
+
 func Kmeans(m, n int, edges []class.Edge) [][]class.Edge {
 	if m > n {
 		fmt.Print(errors.New("Clustering number is greater than edges number"))
@@ -23,9 +28,10 @@ func Kmeans(m, n int, edges []class.Edge) [][]class.Edge {
 	})
 
 	// get clusterCenter
-	var clusterCenter []class.Edge
+	var clusterCenter []Centroid
 	for i := 0; i < m; i++ {
-		clusterCenter = append(clusterCenter, edges[centers[i]])
+		clusterCenter = append(clusterCenter, Centroid{float64(edges[centers[i]].Lx),
+			float64(edges[centers[i]].Ly)})
 	}
 
 	var iterNumber = 0
@@ -35,7 +41,7 @@ func Kmeans(m, n int, edges []class.Edge) [][]class.Edge {
 		for i := 0; i < n; i++ {
 			minDistance := float64(syscall.INFINITE)
 			var kind int
-			for j := 0; j < m; j++ {
+			for j := 0; j < len(clusterCenter); j++ {
 				dis := Distance(edges[i], clusterCenter[j])
 				if dis < minDistance {
 					minDistance = dis
@@ -70,33 +76,32 @@ func Kmeans(m, n int, edges []class.Edge) [][]class.Edge {
 	return clusterings
 }
 
-func JudgeEquationOFCenter(a, b class.Edge) bool {
-	if math.Abs(float64(a.Lx-b.Lx)) <= class.EPS && math.Abs(float64(a.Ly-b.Ly)) <= class.EPS {
+func JudgeEquationOFCenter(a, b Centroid) bool {
+	if math.Abs(a.X-b.X) <= class.EPS && math.Abs(a.Y-b.Y) <= class.EPS {
 		return true
 	}
 	return false
 }
 
-func Distance(a, b class.Edge) float64 {
-	t1 := a.Lx - b.Lx
-	t2 := a.Ly - b.Ly
-	return float64(t1*t1 + t2*t2)
+func Distance(a class.Edge, b Centroid) float64 {
+	t1 := float64(a.Lx) - b.X
+	t2 := float64(a.Ly) - b.Y
+	return t1*t1 + t2*t2
 }
 
-func PointAllNewCenters(centerMap map[int][]class.Edge) []class.Edge {
-	var clusterCenter []class.Edge
+func PointAllNewCenters(centerMap map[int][]class.Edge) []Centroid {
+	var clusterCenter []Centroid
 	for i := 0; i < len(centerMap); i++ {
 		clusterCenter = append(clusterCenter, FindNewCenter(centerMap[i]))
 	}
 	return clusterCenter
 }
 
-func FindNewCenter(c []class.Edge) class.Edge {
-	sumx, sumy := 0, 0
+func FindNewCenter(c []class.Edge) Centroid {
+	sumx, sumy := 0.0, 0.0
 	for i := 0; i < len(c); i++ {
-		sumx += c[i].Lx
-		sumy += c[i].Ly
+		sumx += float64(c[i].Lx)
+		sumy += float64(c[i].Ly)
 	}
-	return class.Edge{-1, sumx / len(c), sumy / len(c), []class.Task{}, []class.Task{},
-		[]class.Task{}, 0, 0, 0}
+	return Centroid{sumx / float64(len(c)), sumy / float64(len(c))}
 }

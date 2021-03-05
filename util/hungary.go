@@ -6,6 +6,7 @@ import (
 
 var p = make([]int, class.N_UPPER+1)
 var vis = make([]bool, class.N_UPPER+1)
+var num = make([]int, class.N_UPPER+1)
 
 func Hungary(adjacencyList [][]int) []int {
 	p = make([]int, class.N_UPPER+1)

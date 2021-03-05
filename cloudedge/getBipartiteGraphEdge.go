@@ -13,7 +13,7 @@ func GetBipartiteGraphEdge(clustering []class.Edge, MigSide, RecSide []int) [][]
 			if len(clustering[MigSide[j]].MigQueue) != 0 {
 				tmpTaskList := clustering[RecSide[k]].ProcQueue
 				tmpTaskList = append(tmpTaskList, clustering[MigSide[j]].MigQueue[0])
-				if jgMigration(tmpTaskList, clustering[RecSide[k]]) {
+				if JgMigration(tmpTaskList, clustering[RecSide[k]]) {
 					tmpList = append(tmpList, k)
 				}
 			} else {
@@ -25,7 +25,7 @@ func GetBipartiteGraphEdge(clustering []class.Edge, MigSide, RecSide []int) [][]
 	return adjacencyList
 }
 
-func jgMigration(lst []class.Task, e class.Edge) bool {
+func JgMigration(lst []class.Task, e class.Edge) bool {
 	var tmp float32 = 0.0
 	sort.Sort(class.NewTasks(lst))
 	for i := 0; i < len(lst); i++ {

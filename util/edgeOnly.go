@@ -54,7 +54,7 @@ func EdgeOnlyWithClusterings(edges []class.Edge, o int) []int {
 	}
 
 	var MigSide, RecSide, vis []int
-	clusterings := GetClusterings(edges)
+	clusterings := UseKmeans(edges)
 	for i := 0; i < len(clusterings); i++ {
 		MigSide, RecSide = cloud_edge.GetInitBipartiteGraph(clusterings[i])
 		for len(MigSide) > 0 {

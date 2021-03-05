@@ -6,13 +6,7 @@ import (
 	"sort"
 )
 
-type SecNewTasks []class.Task
-
-func (t SecNewTasks) Len() int           { return len(t) }
-func (t SecNewTasks) Swap(i, j int)      { t[i], t[j] = t[j], t[i] }
-func (t SecNewTasks) Less(i, j int) bool { return t[i].StartTime < t[j].StartTime }
-
-func MyAlgorithm(dc class.Datacenter, edges []class.Edge, clusterings [][]class.Edge) []int {
+func MyAlgorithm_v2(dc class.Datacenter, edges []class.Edge, clusterings [][]class.Edge) []int {
 	var MigSide, RecSide, vis []int
 	var dcTaskQueue []class.Task
 	cntMigrationToEdge := 0
@@ -23,10 +17,18 @@ func MyAlgorithm(dc class.Datacenter, edges []class.Edge, clusterings [][]class.
 			vis = make([]int, len(MigSide))
 			adjacencyList := cloud_edge.GetBipartiteGraphEdge(clusterings[i], MigSide, RecSide)
 			p := Hungary(adjacencyList)
-			for k := 0; k < len(p); k++ {
+			for k := 0; k < len(RecSide); k++ {
 				if p[k] != -1 {
 					vis[p[k]] = 1
 					migrateATask(&clusterings[i][MigSide[p[k]]], &clusterings[i][RecSide[k]])
+					for ; len(clusterings[i][MigSide[p[k]]].MigQueue) > 0; cntMigrationToEdge++ {
+						tmpTaskQueue := clusterings[i][RecSide[k]].ProcQueue
+						tmpTaskQueue = append(tmpTaskQueue, clusterings[i][MigSide[p[k]]].MigQueue[0])
+						if !cloud_edge.JgMigration(tmpTaskQueue, clusterings[i][RecSide[k]]) {
+							break
+						}
+						migrateATask(&clusterings[i][MigSide[p[k]]], &clusterings[i][RecSide[k]])
+					}
 					cntMigrationToEdge++
 				}
 			}
@@ -68,19 +70,4 @@ func MyAlgorithm(dc class.Datacenter, edges []class.Edge, clusterings [][]class.
 	}
 	return []int{cntMigrationToEdge, cntMigrationToCloud,
 		cnt, cntDDLViolate}
-}
-
-func UseKmeans(edges []class.Edge) [][]class.Edge {
-	return Kmeans(class.M, cloud_edge.N, edges)
-}
-
-func UseClustering(edges []class.Edge) [][]class.Edge {
-	rst, _ := Clustering(class.M, edges)
-	return rst
-}
-
-func migrateATask(src *class.Edge, des *class.Edge) {
-	des.ProcQueue = append(des.ProcQueue, src.MigQueue[0])
-	des.TimeLine += class.TaskComputeTime(src.MigQueue[0], *des)
-	src.MigQueue = append(src.MigQueue[:0], src.MigQueue[1:]...)
 }
