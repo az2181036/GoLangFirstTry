@@ -44,7 +44,7 @@ func main() {
 
 		fmt.Println(cntTasksNumber, len(edges))
 		startime := time.Now().UnixNano()
-		data = append(data, util.MyAlgorithm_v2(dc, edges, clusterings))
+		data = append(data, util.MyAlgorithm(dc, edges, clusterings))
 		endtime := time.Now().UnixNano()
 		execTime := float64((endtime - startime) / 1e6)
 		t = append(t, execTime)
