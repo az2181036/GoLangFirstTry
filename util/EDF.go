@@ -1,6 +1,8 @@
 package util
 
-import "../class"
+import (
+	"../class"
+)
 
 // Earliest deadline first
 

@@ -4,7 +4,6 @@ import (
 	"../class"
 	"../cloudedge"
 	"../util"
-	"fmt"
 	"sort"
 	"time"
 )
@@ -33,20 +32,6 @@ func main() {
 				clusterings[i][j] = edges[clusterings[i][j].Id]
 			}
 		}
-
-		tmpp := 0.0
-		for i:=0; i<len(edges); i++ {
-			cnt := 0.0
-			if len(edges[i].TaskQueue) == 0{
-				continue
-			}
-			for j:=0; j<len(edges[i].TaskQueue); j++ {
-				cnt += float64(edges[i].TaskQueue[j].Data * edges[i].TaskQueue[j].ExecuteCircleForOneBit) /
-					float64(edges[i].ComputePower)
-			}
-			tmpp += cnt / float64(len(edges[i].TaskQueue))
-		}
-		fmt.Println(tmpp/float64(len(edges)))
 
 		startime := time.Now().UnixNano()
 		data = append(data, util.MyAlgorithm_v2(&dc, clusterings))

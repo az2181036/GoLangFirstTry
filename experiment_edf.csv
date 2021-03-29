@@ -1,5 +1,6 @@
-﻿Tasks Number Limit,Migration Number,Upload Number,Amount of Tasks,Violation Tasks,Execute Time
-100,4,58,5521,21,2E+00
-300,1283,964,17319,248,8.3E+01
-500,5334,2517,32554,391,3.27E+02
-1000,15136,11408,59147,3996,2.074E+03
+﻿Tasks Number Limit,Migration Number,Upload Number,Amount of Tasks,Violation Tasks,Execute Time,Load,Sigma
+100,48,14,5521,6,3.0,0.282,0.998
+300,1665,582,17319,135,372.0,0.722,0.978
+500,2388,5463,32554,761,1115.0,0.954,0.872
+800,2886,14521,46819,8240,2223.0,0.991,0.774
+1000,3228,22589,58056,11325,4480.0,0.986,0.725

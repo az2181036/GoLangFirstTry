@@ -73,6 +73,11 @@ func Kmeans(m, n int, edges []class.Edge) [][]class.Edge {
 		}
 		clusterCenter = newClusterCenter
 	}
+	for i:=0; i<len(clusterings); i++{
+		for j:=0; j<len(clusterings[i]); j++ {
+			clusterings[i][j].Cluster = i
+		}
+	}
 	return clusterings
 }
 

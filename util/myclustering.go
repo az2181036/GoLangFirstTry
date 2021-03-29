@@ -90,5 +90,10 @@ func Clustering(m int, edges []class.Edge) ([][]class.Edge, []Centroid) {
 		}
 		clusterCenter = newClusterCenter
 	}
+	for i:=0; i<len(clusterings); i++{
+		for j:=0; j<len(clusterings[i]); j++ {
+			clusterings[i][j].Cluster = i
+		}
+	}
 	return clusterings, clusterCenter
 }

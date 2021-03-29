@@ -25,8 +25,9 @@ func MyAlgorithm(dc class.Datacenter, edges []class.Edge, clusterings [][]class.
 			p := Hungary(adjacencyList)
 			for k := 0; k < len(p); k++ {
 				if p[k] != -1 {
-					vis[p[k]] = 1
-					migrateATask(&clusterings[i][MigSide[p[k]]], &clusterings[i][RecSide[k]])
+					mig_idx := p[k]
+					vis[mig_idx] = 1
+					migrateATask(&clusterings[i][MigSide[mig_idx]], &clusterings[i][RecSide[k]])
 					cntMigrationToEdge++
 				}
 			}
@@ -79,6 +80,7 @@ func UseClustering(edges []class.Edge) [][]class.Edge {
 }
 
 func migrateATask(src *class.Edge, des *class.Edge) {
+	src.ComputeTaskNumber ++
 	des.ProcQueue = append(des.ProcQueue, src.MigQueue[0])
 	des.TimeLine += class.TaskComputeTime(src.MigQueue[0], *des)
 	src.MigQueue = append(src.MigQueue[:0], src.MigQueue[1:]...)
